@@ -1,0 +1,103 @@
+server:
+  port: 8030
+  servlet:
+    context-path: /
+
+#feign-client-name: provider-user
+
+spring:
+  application:
+    name: feign-movie
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://lsf:lsf123@peer2:8762/eureka/,http://lsf:lsf123@peer1:8761/eureka/
+    healthcheck:
+      enabled: true
+  instance:
+    prefer-ip-address: true # 开启健康检查（需要spring-boot-starter-actuator依赖）
+    lease-expiration-duration-in-seconds: 30 # 续约到期时间（默认90秒）
+    lease-renewal-interval-in-seconds: 10 # 续约更新时间间隔（默认30秒）ds
+#############################################################################
+#feign配置
+  #从Spring Cloud Edgware开始，Feign支持使用属性自定义Feign。对于一个指定名称的Feign Client（例如该Feign Client的名称为com.cibei.consumermoviefeign.consumer.MovieFeignClient ），Feign支持如下配置项：
+feign:
+  #开启断路器
+  hystrix:
+    enabled: true
+  client:
+    config:
+      com.cibei.consumermoviefeign.consumer.MovieFeignClient:
+        connectTimeout: 5000  # 相当于Request.Options
+        readTimeout: 5000     # 相当于Request.Options
+        # 配置Feign的日志级别，相当于代码配置方式中的Logger
+        loggerLevel: full
+        # Feign的错误解码器，相当于代码配置方式中的ErrorDecoder
+        errorDecoder: com.example.SimpleErrorDecoder
+        # 配置重试，相当于代码配置方式中的Retryer
+        retryer: com.example.SimpleRetryer
+        # 配置拦截器，相当于代码配置方式中的RequestInterceptor
+        requestInterceptors:
+          - com.example.FooRequestInterceptor
+          - com.example.BarRequestInterceptor
+        decode404: false
+  #TIPS
+
+
+  #Dalston开始，Ribbon支持配置eager load实现在启动时就初始化Ribbon相关类。
+
+ribbon:
+  eager-load:
+    enabled: true
+    clients: com.cibei.consumermoviefeign.consumer.MovieFeignClient
+
+
+
+  #个人并不建议配置retryer，Spring Cloud Camden以及之后的版本中，Spring Cloud关闭了Feign的重试，而是使用Ribbon的重试。如果自己再定义Feign的重试后，那么可能会造成重试特性的混乱。笔者已在https://github.com/spring-cloud/spring-cloud-netflix/issues/2330 提出该问题。
+
+  #在application.yml 中添加以下内容，将该Feign接口的日志级别设置为DEBUG：
+logging:
+  level:
+    com.cibei.consumermoviefeign.consumer.MovieFeignClient: debug
+
+
+#  上面讨论了如何配置特定名称的Feign Client，那么如果想为所有的Feign Client都进行配置，该怎么办呢？我们知道，@EnableFeignClients 注解上有个defaultConfiguration 属性，我们可以将默认配置写成一个类，然后用defaultConfiguration 来引用，例如：
+#
+#  @EnableFeignClients(defaultConfiguration = DefaultRibbonConfig.class)
+#  如果想使用配置属性的方式，只需使用类似如下的写法即可。
+#
+#feign:
+#  client:
+#    config:
+#      default:
+#        connectTimeout: 5000
+#        readTimeout: 5000
+#        loggerLevel: basic
+
+
+#  配置优先级
+#  如果你不小心又使用了Java代码配置Feign，同时又使用了配置属性配置Feign，那么使用配置属性的优先级更高。配置属性配置的方式将会覆盖Java代码配置。如果你想修改代码配置方式的优先级，可使用如下属性：feign.client.default-to-properties=false 。
+
+#  压缩
+#  一些场景下，我们可能需要对请求或响应进行压缩，此时可使用以下属性启用Feign的压缩功能。
+#
+#  feign.compression.request.enabled=true
+#  feign.compression.response.enabled=true
+#  对于请求的压缩，Feign还提供了更为详细的设置，例如：
+#
+#  feign.compression.request.enabled=true
+#  feign.compression.request.mime-types=text/xml,application/xml,application/json
+#  feign.compression.request.min-request-size=2048
+#  其中，feign.compression.request.mime-types 用于支持的媒体类型列表，默认是text/xml、application/xml以及application/json。
+#
+#  feign.compression.request.min-request-size 用于设置请求的最小阈值，默认是2048。
+
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: 'hystrix.stream'

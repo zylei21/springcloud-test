@@ -1,0 +1,16 @@
+server:
+  port: 8040
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: server-zuul
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://lsf:lsf123@peer2:8762/eureka/,http://lsf:lsf123@peer1:8761/eureka/
+logging:
+  level:
+    com.netflix: DEBUG

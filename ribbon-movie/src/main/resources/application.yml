@@ -1,0 +1,46 @@
+server:
+  port: 8020
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: ribbon-movies
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://lsf:lsf123@peer2:8762/eureka/,http://lsf:lsf123@peer1:8761/eureka/
+    healthcheck:
+      enabled: true
+  instance:
+    prefer-ip-address: true # 开启健康检查（需要spring-boot-starter-actuator依赖）
+    lease-expiration-duration-in-seconds: 30 # 续约到期时间（默认90秒）
+    lease-renewal-interval-in-seconds: 10 # 续约更新时间间隔（默认30秒）ds
+
+  #<clientName>.ribbon. 如下属性
+  #
+  #NFLoadBalancerClassName: should implement ILoadBalancer
+  #NFLoadBalancerRuleClassName: should implement IRule
+  #NFLoadBalancerPingClassName: should implement IPing
+  #NIWSServerListClassName: should implement ServerList
+  #NIWSServerListFilterClassName should implement ServerListFilter
+user:
+  ribbon:
+    com.cibei.config.TestConfiguration: com.netflix.loadbalancer.RandomRule
+
+  ##和上文细粒度配置类似，只需将目标服务名称前缀去掉即可。
+  ##全局配置
+---
+ribbon:
+  com.cibei.config.TestConfiguration: com.netflix.loadbalancer.RandomRule
+
+
+  #Ribbon Eager加载
+  #默认情况下Ribbon是懒加载的——首次请求Ribbon相关类才会初始化，这会导致首次请求过慢的问题，你可以配置饥饿加载，让Ribbon在应用启动时就初始化。
+---
+ribbon:
+  eager-load:
+    enabled: true
+    # 多个用,分隔
+    clients: microservice-provider-user
