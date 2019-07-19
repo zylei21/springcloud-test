@@ -8,8 +8,8 @@ spring:
       server:
         git:
           # Git仓库地址
-          uri: https://git.oschina.net/itmuch/spring-cloud-config-repo.git
+          uri: https://github.com/zylei21/springcloud-test.git
           # Git仓库账号
-          username:
+          username: zylei21
           # Git仓库密码
-          password:
+          password: Lei211314
