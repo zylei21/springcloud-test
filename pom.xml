@@ -13,6 +13,7 @@
         <module>feign-movie</module>
         <module>server-zuul</module>
         <module>server-config</module>
+        <module>config-client</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
