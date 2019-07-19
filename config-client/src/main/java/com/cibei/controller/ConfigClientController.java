@@ -11,14 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
  * @author leishufeng
  * @date 2019/07/19 9:53
  */
-@RestController
-@Configuration
-public class ConfigClientController {
-    @Value("${profile}")
-    private String profile;
 
-    @GetMapping("/profile")
-    public String hello() {
-        return this.profile;
-    }
+
+public class ConfigClientController {
+
 }

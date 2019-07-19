@@ -1,8 +1,10 @@
+server:
+    port: 10001
 spring:
-  application:
-    name: server-foo    # 对应config server所获取的配置文件的{application}
-  cloud:
-    config:
-      uri: http://localhost:8080/
-      profile: dev            # profile对应config server所获取的配置文件中的{profile}
-      label: master           # 指定Git仓库的分支，对应config server所获取的配置文件的{label}
+    application:
+        name: server-foo
+    cloud:
+        config:
+            label: master
+            profile: dev
+            uri: http://127.0.0.1:10000/
