@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 9000
 spring:
   application:
     name: server-config
@@ -8,11 +8,11 @@ spring:
       server:
         git:
           # Git仓库地址
-          uri: https://github.com/zylei21/springcloud-test.git
+          uri: https://git.oschina.net/itmuch/spring-cloud-config-repo.git
           # Git仓库账号
-          username: zylei21
+          username:
           # Git仓库密码
-          password: Lei211314
+          password:
 
           #配置client
       uri: http://localhost:8080/
